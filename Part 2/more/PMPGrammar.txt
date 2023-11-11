@@ -1,0 +1,34 @@
+<Program>      --> begin <code> end
+<code>         --> espilon
+               --> <InstList>
+<InstList>     --> <Instruction>
+               --> <Instruction> ... <InstList>
+<Instruction>  --> <Assign>
+               --> <If>
+               --> <While>
+               --> <For>
+               --> <Print>
+               --> <Read>
+               --> begin <InstList> end
+<Assign>       --> VARNAME ASSIGN <ExprArith>
+<ExprArith>    --> VARNAME
+               --> NUMBER
+               --> LPAREN <ExprArith> RPAREN
+               --> UMINUS <ExprArith>
+               --> <ExprArith> <Op> <ExprArith>
+<Op>           --> PLUS
+               --> BMINUS
+               --> TIMES
+               --> DIVIDE
+<If>           --> if <Cond> then <Instruction>
+               --> if <Cond> then <Instruction> else <Instruction>
+<Cond>         --> <Cond> and <Cond>
+               --> <Cond> or <Cond>
+               --> LBRAK <Cond> RBRAK
+               --> <SimpleCond>
+<SimpleCond>   --> <ExprArith> <Comp> <ExprArith>
+<Comp>         --> EQUAL
+               --> LESS
+<While>        --> while <Cond> do <Instruction>
+<Print>        --> print LPAREN VARNAME RPAREN
+<Read>         --> read LPAREN VARNAME RPAREN
