@@ -20,22 +20,22 @@ public class Main {
             Grammar grammar = grammarReader.getGrammar();
             StringBuilder output = new StringBuilder();
             output.append("********** The Grammar **********\n");
-            System.out.print("test" + output);
             output.append(grammar);
-            // Compute first sets
-            System.out.print("--------------------");
+
             grammar.setFirst();
             output.append("\n********** First **********\n" + grammar.stringFirst());
-            // Compute follow sets
+
             grammar.setFollow();
             output.append("\n********** Follow **********\n" + grammar.stringFollow());
-            // Compute action table
-            grammar.setActionTable();
 
-            // Print action table
-            if (args.length > 0 && args[0].equals("-pat")) {
-                System.out.println(grammar.stringActionTable());
-            }
+//            grammar.setActionTable();
+//            output.append("\n********** Action table **********\n");
+            System.out.print(output);
+//
+//            // Print action table
+//            if (args.length > 0 && args[0].equals("-pat")) {
+//                System.out.println(grammar.stringActionTable());
+//            }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
