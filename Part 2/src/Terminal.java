@@ -1,9 +1,8 @@
 public enum Terminal {
     BEGIN,
     END,
-    EPSILON,
     ASSIGN,
-    THREE_DOTS,
+    DOTS,
     LPAREN,
     RPAREN,
     UMINUS,
@@ -15,15 +14,17 @@ public enum Terminal {
     THEN,
     ELSE,
     AND,
-    OR,Q
+    OR,
     LBRACK,
     RBRACK,
     EQUAL,
-    LESS,
+    SMALLER,
     WHILE,
     DO,
     PRINT,
     READ,
     VARNAME,
     NUMBER,
+    EOS,
+    EPSILON
 }

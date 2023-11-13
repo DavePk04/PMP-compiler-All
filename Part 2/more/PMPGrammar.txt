@@ -1,8 +1,8 @@
-<Program>      --> begin <code> end
-<code>         --> espilon
+<Program>      --> begin <Code> end
+<Code>         --> epsilon
                --> <InstList>
 <InstList>     --> <Instruction>
-               --> <Instruction> ... <InstList>
+               --> <Instruction> dots <InstList>
 <Instruction>  --> <Assign>
                --> <If>
                --> <While>
@@ -10,25 +10,25 @@
                --> <Print>
                --> <Read>
                --> begin <InstList> end
-<Assign>       --> VARNAME ASSIGN <ExprArith>
-<ExprArith>    --> VARNAME
-               --> NUMBER
-               --> LPAREN <ExprArith> RPAREN
-               --> UMINUS <ExprArith>
+<Assign>       --> varname assign <ExprArith>
+<ExprArith>    --> varname
+               --> number
+               --> lparen <ExprArith> rparen
+               --> uminus <ExprArith>
                --> <ExprArith> <Op> <ExprArith>
-<Op>           --> PLUS
-               --> BMINUS
-               --> TIMES
-               --> DIVIDE
+<Op>           --> plus
+               --> bminus
+               --> times
+               --> divide
 <If>           --> if <Cond> then <Instruction>
                --> if <Cond> then <Instruction> else <Instruction>
 <Cond>         --> <Cond> and <Cond>
                --> <Cond> or <Cond>
-               --> LBRAK <Cond> RBRAK
+               --> lbrack <Cond> rbrack
                --> <SimpleCond>
 <SimpleCond>   --> <ExprArith> <Comp> <ExprArith>
-<Comp>         --> EQUAL
-               --> LESS
+<Comp>         --> equal
+               --> smaller
 <While>        --> while <Cond> do <Instruction>
-<Print>        --> print LPAREN VARNAME RPAREN
-<Read>         --> read LPAREN VARNAME RPAREN
+<Print>        --> print lparen varname rparen
+<Read>         --> read lparen varname rparen

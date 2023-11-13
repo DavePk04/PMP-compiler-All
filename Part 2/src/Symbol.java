@@ -1,72 +1,45 @@
-public class Symbol{
-	public static final int UNDEFINED_POSITION = -1;
-	public static final Object NO_VALUE = null;
-	
-	private final LexicalUnit type;
-	private final Object value;
-	private final int line,column;
+public class Symbol {
+	private Terminal terminal;
+	private NonTerminal nonTerminal;
 
-	public Symbol(LexicalUnit unit,int line,int column,Object value){
-		this.type	= unit;
-		this.line	= line+1;
-		this.column	= column;
-		this.value	= value;
-	}
-	
-	public Symbol(LexicalUnit unit,int line,int column){
-		this(unit,line,column,NO_VALUE);
-	}
-	
-	public Symbol(LexicalUnit unit,int line){
-		this(unit,line,UNDEFINED_POSITION,NO_VALUE);
-	}
-	
-	public Symbol(LexicalUnit unit){
-		this(unit,UNDEFINED_POSITION,UNDEFINED_POSITION,NO_VALUE);
-	}
-	
-	public Symbol(LexicalUnit unit,Object value){
-		this(unit,UNDEFINED_POSITION,UNDEFINED_POSITION,value);
+	public Symbol(Terminal term) {
+		terminal = term;
+		nonTerminal = null;
 	}
 
-	public boolean isTerminal(){
-		return this.type != null;
+	public Symbol(NonTerminal nonTerm) {
+		nonTerminal = nonTerm;
+		terminal = null;
 	}
-	
-	public boolean isNonTerminal(){
-		return this.type == null;
+
+	public Terminal getTerminal() {
+		return terminal;
 	}
-	
-	public LexicalUnit getType(){
-		return this.type;
+
+	public NonTerminal getNonTerminal() {
+		return nonTerminal;
 	}
-	
-	public Object getValue(){
-		return this.value;
+
+	public boolean isTerminal() {
+		return (terminal != null && nonTerminal == null);
 	}
-	
-	public int getLine(){
-		return this.line;
+
+	public boolean isNonTerminal() {
+		return (nonTerminal != null && terminal == null);
 	}
-	
-	public int getColumn(){
-		return this.column;
+
+	public boolean isEpsilon() {
+		return (nonTerminal == null && terminal.equals(Terminal.EPSILON));
 	}
-	
+
 	@Override
-	public int hashCode(){
-		final String value	= this.value != null? this.value.toString() : "null";
-		final String type		= this.type  != null? this.type.toString()  : "null";
-		return new String(value+"_"+type).hashCode();
-	}
-	
-	@Override
-	public String toString(){
-		if(this.isTerminal()){
-			final String value	= this.value != null? this.value.toString() : "null";
-			final String type		= this.type  != null? this.type.toString()  : "null";
-			return "token: "+value+"\tlexical unit: "+type;
+	public String toString() {
+		if (isTerminal()) {
+			return terminal.toString();
+		} else if (isNonTerminal()) {
+			return nonTerminal.toString();
+		} else {
+			return "InvalidSymbol";
 		}
-		return "Non-terminal symbol";
 	}
 }

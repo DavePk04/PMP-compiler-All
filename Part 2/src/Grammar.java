@@ -15,7 +15,7 @@ public class Grammar {
     private Map<Pair<NonTerminal,Terminal>,List<Symbol>> actionTable;
 
     public Grammar(NonTerminal startSymb) {
-        startSymbol = startSymbol;
+        this.startSymbol = startSymb;
         derivationRules = new LinkedHashMap<NonTerminal,Set<List<Symbol>>>();
         first = new LinkedHashMap<NonTerminal,Set<Terminal>>();
         follow = new LinkedHashMap<NonTerminal,Set<Terminal>>();
@@ -57,15 +57,51 @@ public class Grammar {
         do {
             stable = true;
             for (NonTerminal nonTerm: NonTerminal.values()) {
-                for (List<Symbol> rule: getRules(nonTerm)) {
-                    Set<Terminal> firstOfRule = first(rule);
-                    if (first.get(nonTerm).addAll(firstOfRule)) {
-                        stable = false;
+                Set<List<Symbol>> rules = getRules(nonTerm);
+                if (rules != null) {
+                    for (List<Symbol> rule: rules) {
+                        Set<Terminal> firstOfRule = first(rule);
+                        if (first.get(nonTerm).addAll(firstOfRule)) {
+                            stable = false;
+                        }
                     }
                 }
             }
         } while (!stable);
     }
+
+    public void setFollow() {
+        for (NonTerminal nonTerm: NonTerminal.values()) {
+            follow.put(nonTerm, EnumSet.noneOf(Terminal.class));
+        }
+        follow.put(startSymbol, EnumSet.of(Terminal.EPSILON));
+        boolean stable;
+        do {
+            stable = true;
+            for (NonTerminal nonTerm: NonTerminal.values()) {
+                Set<List<Symbol>> rules = getRules(nonTerm);
+                if (rules != null) {
+                    for (List<Symbol> rule: rules) {
+                        for (int i = 0; i < rule.size() ; i++) {
+                            Symbol symb = rule.get(i);
+                            if (symb.isNonTerminal()) {
+                                Set<Terminal> firstOfRule = first(rule.subList(i+1, rule.size()));
+                                if (follow.get(symb.getNonTerminal()).addAll(firstOfRule)) {
+                                    stable = false;
+                                };
+                                if (firstOfRule.contains(Terminal.EPSILON) || i == rule.size()-1) {
+                                    if (follow.get(symb.getNonTerminal()).addAll(follow.get(nonTerm))) {
+                                        stable = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } while (!stable);
+    }
+
 
     public Set<Terminal> first(List<Symbol> partialRule) {
         Set<Terminal> firstOfRule = EnumSet.noneOf(Terminal.class);
@@ -83,35 +119,6 @@ public class Grammar {
             }
         }
         return firstOfRule;
-    }
-
-    public void setFollow () {
-        for (NonTerminal nonTerm: NonTerminal.values()) {
-            follow.put(nonTerm, EnumSet.noneOf(Terminal.class));
-        }
-        follow.put(startSymbol, EnumSet.of(Terminal.EPSILON));
-        boolean stable;
-        do {
-            stable = true;
-            for (NonTerminal nonTerm: NonTerminal.values()) {
-                for (List<Symbol> rule: getRules(nonTerm)) {
-                    for (int i = 0; i < rule.size() ; i++) { // We need to use index to get sublist
-                        Symbol symb = rule.get(i);
-                        if (symb.isNonTerminal()) {
-                            Set<Terminal> firstOfRule = first(rule.subList(i+1, rule.size()));
-                            if (follow.get(symb.getNonTerminal()).addAll(firstOfRule)) {
-                                stable = false;
-                            };
-                            if (firstOfRule.contains(Terminal.EPSILON) || i == rule.size()-1) {
-                                if (follow.get(symb.getNonTerminal()).addAll(follow.get(nonTerm))) {
-                                    stable = false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } while (!stable);
     }
 
     public void addAction(NonTerminal nonTerm, Terminal term, List<Symbol> rule) throws Exception {
