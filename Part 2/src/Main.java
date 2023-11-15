@@ -31,7 +31,15 @@ public class Main {
 //            grammar.setActionTable();
 //            output.append("\n********** Action table **********\n");
             System.out.print(output);
-//
+            // print start symbol
+            System.out.println("Start symbol: " + grammar.getStartSymbol());
+
+
+            grammar.setActionTable();
+            output.append("\n********** Action table **********\n");
+            output.append(grammar.stringActionTable());
+            System.out.println(output);
+
 //            // Print action table
 //            if (args.length > 0 && args[0].equals("-pat")) {
 //                System.out.println(grammar.stringActionTable());
@@ -45,4 +53,5 @@ public class Main {
             e.printStackTrace();
         }
     }
+
 }

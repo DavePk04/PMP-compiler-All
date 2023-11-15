@@ -1,10 +1,4 @@
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.EnumSet;
+import java.util.*;
 import java.lang.StringBuilder;
 
 public class Grammar {
@@ -32,6 +26,11 @@ public class Grammar {
         }
     }
 
+    // get derivation rules
+    public Map<NonTerminal,Set<List<Symbol>>> getDerivationRules() {
+        return derivationRules;
+    }
+
     public Set<List<Symbol>> getRules(NonTerminal nonTerm) {
         return derivationRules.get(nonTerm);
     }
@@ -47,6 +46,8 @@ public class Grammar {
     public Map<Pair<NonTerminal,Terminal>,List<Symbol>> getActionTable() {
         return actionTable;
     }
+
+    public Symbol getStartSymbol() { return new Symbol(startSymbol); }
 
 
     public void setFirst() {
@@ -133,7 +134,9 @@ public class Grammar {
     public void setActionTable() throws Exception {
         for (NonTerminal nonTerm: NonTerminal.values()) {
             for (List<Symbol> rule: getRules(nonTerm)) {
+//                System.out.println("rule: " + rule);
                 for (Terminal term: first(rule)) {
+
                     if (term.equals(Terminal.EPSILON)) {
                         for (Terminal folTerm: follow.get(nonTerm)) {
                             addAction(nonTerm, folTerm, rule);
@@ -223,4 +226,12 @@ public class Grammar {
         }
         return string.toString();
     }
+
+    /* TODO:
+    * build a derivation tree which from startSymbol
+    * inputs: terminal enum, nonTerminal enum, startSymbol, derivationRules
+    * output: derivation tree
+    * this is a kind of derivationRules: {Program=[[BEGIN, Code, END]], Code=[[InstList], [EPSILON]], InstList=[[Instruction], [Instruction, DOTS, InstList]], Instruction=[[If], [Assign], [While], [For], [Print], [Read], [BEGIN, InstList, END]], Assign=[[VARNAME, ASSIGN, ExprArith]], ExprArith=[[UMINUS, ExprArith], [VARNAME], [NUMBER], [LPAREN, ExprArith, RPAREN], [ExprArith, Op, ExprArith]], Op=[[PLUS], [TIMES], [BMINUS], [DIVIDE]], If=[[IF, Cond, THEN, Instruction, ELSE, Instruction], [IF, Cond, THEN, Instruction]], Cond=[[SimpleCond], [Cond, AND, Cond], [LBRACK, Cond, RBRACK], [Cond, OR, Cond]], SimpleCond=[[ExprArith, Comp, ExprArith]], Comp=[[EQUAL], [SMALLER]], While=[[WHILE, Cond, DO, Instruction]], Print=[[PRINT, LPAREN, VARNAME, RPAREN]], Read=[[READ, LPAREN, VARNAME, RPAREN]]}
+     * */
+
 }

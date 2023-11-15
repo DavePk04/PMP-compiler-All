@@ -3,7 +3,6 @@ public enum NonTerminal {
     Code,
     InstList,
     Instruction,
-    For,
     Assign,
     ExprArith,
     Op,

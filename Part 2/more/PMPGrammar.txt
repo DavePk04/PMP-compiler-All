@@ -6,7 +6,6 @@
 <Instruction>  --> <Assign>
                --> <If>
                --> <While>
-               --> <For>
                --> <Print>
                --> <Read>
                --> begin <InstList> end
@@ -20,7 +19,7 @@
                --> bminus
                --> times
                --> divide
-<If>           --> if <Cond> then <Instruction>
+<If>           --> if <Cond> then <Instruction> else
                --> if <Cond> then <Instruction> else <Instruction>
 <Cond>         --> <Cond> and <Cond>
                --> <Cond> or <Cond>
