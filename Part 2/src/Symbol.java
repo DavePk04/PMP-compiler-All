@@ -42,4 +42,14 @@ public class Symbol {
 			return "InvalidSymbol";
 		}
 	}
+
+	public Object getValue() {
+		if (isTerminal()) {
+			return terminal.getValue();
+		} else if (isNonTerminal()) {
+			return nonTerminal.getValue();
+		} else {
+			return null;
+		}
+	}
 }

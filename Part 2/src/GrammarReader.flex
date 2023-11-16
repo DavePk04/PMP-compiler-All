@@ -31,8 +31,7 @@ import java.util.Collections;
             case "dots": return Terminal.DOTS;
             case "lparen": return Terminal.LPAREN;
             case "rparen": return Terminal.RPAREN;
-            case "uminus": return Terminal.UMINUS;
-            case "bminus": return Terminal.BMINUS;
+            case "minus": return Terminal.MINUS;
             case "plus": return Terminal.PLUS;
             case "times": return Terminal.TIMES;
             case "divide": return Terminal.DIVIDE;
@@ -66,10 +65,11 @@ import java.util.Collections;
 
 AlphaUpperCase = [A-Z]
 AlphaLowerCase = [a-z]
-Alpha          = {AlphaUpperCase}|{AlphaLowerCase}
+Digit          = [0-9]
+AlphaNumeric   = {AlphaUpperCase}|{AlphaLowerCase}|{Digit}
 
 RightArrow     = "-->"
-Variable       = <{Alpha}+>
+Variable       = <{AlphaNumeric}+>
 Terminal       = {AlphaLowerCase}+
 Epsilon        = "EPSILON"
 LineFeed       = "\n"

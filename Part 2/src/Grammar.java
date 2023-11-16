@@ -133,8 +133,9 @@ public class Grammar {
 
     public void setActionTable() throws Exception {
         for (NonTerminal nonTerm: NonTerminal.values()) {
+            System.out.println("nonTerm: " + nonTerm);
             for (List<Symbol> rule: getRules(nonTerm)) {
-//                System.out.println("rule: " + rule);
+                System.out.println("rule: " + rule);
                 for (Terminal term: first(rule)) {
 
                     if (term.equals(Terminal.EPSILON)) {
