@@ -32,8 +32,6 @@ public class Main {
 //            output.append("\n********** Action table **********\n");
             System.out.print(output);
             // print start symbol
-            System.out.println("Start symbol: " + grammar.getStartSymbol());
-
 
             grammar.setActionTable();
             output.append("\n********** Action table **********\n");

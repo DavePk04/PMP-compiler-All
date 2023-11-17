@@ -1,13 +1,13 @@
 public class TreeLabel {
     private NonTerminal nonTerminal;
-    private Symbol token;
+    private Token token;
 
     public TreeLabel(NonTerminal nonTerm) {
         nonTerminal = nonTerm;
         token = null;
     }
 
-    public TreeLabel(Symbol tok) {
+    public TreeLabel(Token tok) {
         nonTerminal = null;
         token = tok;
     }

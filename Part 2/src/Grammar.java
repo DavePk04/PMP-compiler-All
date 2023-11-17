@@ -47,8 +47,6 @@ public class Grammar {
         return actionTable;
     }
 
-    public Symbol getStartSymbol() { return new Symbol(startSymbol); }
-
 
     public void setFirst() {
         for (NonTerminal nonTerm: NonTerminal.values()) {
