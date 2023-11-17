@@ -1,8 +1,9 @@
 <Program>         --> begin <Code> end
 <Code>            --> epsilon
                   --> <InstList>
-<InstList>        --> <Instruction>
-                  --> <Instruction> dots <InstList>
+<InstList>        --> <Instruction> <DotsInstList>
+<DotsInstList>    --> epsilon
+                  --> dots <InstList>
 <Instruction>     --> <Assign>
                   --> <If>
                   --> <While>

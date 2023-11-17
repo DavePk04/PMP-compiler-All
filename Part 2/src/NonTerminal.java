@@ -3,6 +3,7 @@ public enum NonTerminal {
     Code,
     InstList,
     Instruction,
+    DotsInstList,
     Assign,
     ExprArith,
     ExprArith2,
@@ -75,6 +76,8 @@ public enum NonTerminal {
                 return "MultOp";
             case Statement:
                 return "Statement";
+            case DotsInstList:
+                return "DotsInstList";
             default:
                 return null;
         }
