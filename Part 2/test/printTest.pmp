@@ -1,0 +1,7 @@
+
+
+'' Euclid's algorithm ''
+
+begin
+    print(a)
+end

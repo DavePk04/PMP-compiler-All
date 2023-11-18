@@ -15,28 +15,36 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            FileReader grammarSource = new FileReader(args[args.length-1]);
-            GrammarReader grammarReader = new GrammarReader(grammarSource);
-            Grammar grammar = grammarReader.getGrammar();
-            StringBuilder output = new StringBuilder();
-            output.append("********** The Grammar **********\n");
-            output.append(grammar);
-
-            grammar.setFirst();
-            output.append("\n********** First **********\n" + grammar.stringFirst());
-
-            grammar.setFollow();
-            output.append("\n********** Follow **********\n" + grammar.stringFollow());
-
+            FileReader file = new FileReader(args[0]);
+            Parser parser = new Parser(file);
+            parser.program();
+            Integer[] rules = parser.getRulesNumberList().toArray(new Integer[0]);
+            for (Integer rule : rules) {
+                System.out.print(rule + " ");
+            }
+            System.out.println();
+//            FileReader grammarSource = new FileReader(args[args.length-1]);
+//            GrammarReader grammarReader = new GrammarReader(grammarSource);
+//            Grammar grammar = grammarReader.getGrammar();
+//            StringBuilder output = new StringBuilder();
+//            output.append("********** The Grammar **********\n");
+//            output.append(grammar);
+//
+//            grammar.setFirst();
+//            output.append("\n********** First **********\n" + grammar.stringFirst());
+//
+//            grammar.setFollow();
+//            output.append("\n********** Follow **********\n" + grammar.stringFollow());
+//
+////            grammar.setActionTable();
+////            output.append("\n********** Action table **********\n");
+//            System.out.print(output);
+//            // print start symbol
+//
 //            grammar.setActionTable();
 //            output.append("\n********** Action table **********\n");
-            System.out.print(output);
-            // print start symbol
-
-            grammar.setActionTable();
-            output.append("\n********** Action table **********\n");
-            output.append(grammar.stringActionTable());
-            System.out.println(output);
+//            output.append(grammar.stringActionTable());
+//            System.out.println(output);
 
 //            // Print action table
 //            if (args.length > 0 && args[0].equals("-pat")) {
