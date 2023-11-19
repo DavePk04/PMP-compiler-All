@@ -45,6 +45,7 @@ public class Main {
 
                 }
                 TreeToTex.write(parseTree.toLaTeX());
+                TreeToTex.write(parseTree.toTikZPicture());
                 TreeToTex.close();
             }
             else{

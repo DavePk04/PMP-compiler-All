@@ -2,36 +2,36 @@ import java.util.*;
 import java.lang.StringBuilder;
 
 public class Grammar {
-    private NonTerminal startSymbol;
-    private Map<NonTerminal,Set<List<Symbol>>> derivationRules;
+    private NonTerminal startToken;
+    private Map<NonTerminal,Set<List<Token>>> derivationRules;
     private Map<NonTerminal,Set<Terminal>> first;
     private Map<NonTerminal,Set<Terminal>> follow;
-    private Map<Pair<NonTerminal,Terminal>,List<Symbol>> actionTable;
+    private Map<Pair<NonTerminal,Terminal>,List<Token>> actionTable;
 
     public Grammar(NonTerminal startSymb) {
-        this.startSymbol = startSymb;
-        derivationRules = new LinkedHashMap<NonTerminal,Set<List<Symbol>>>();
+        this.startToken = startSymb;
+        derivationRules = new LinkedHashMap<NonTerminal,Set<List<Token>>>();
         first = new LinkedHashMap<NonTerminal,Set<Terminal>>();
         follow = new LinkedHashMap<NonTerminal,Set<Terminal>>();
-        actionTable = new LinkedHashMap<Pair<NonTerminal,Terminal>, List<Symbol>>();
+        actionTable = new LinkedHashMap<Pair<NonTerminal,Terminal>, List<Token>>();
     }
 
-    public void addRule(NonTerminal lhs, List<Symbol> rhs) {
+    public void addRule(NonTerminal lhs, List<Token> rhs) {
         if (derivationRules.containsKey(lhs)) {
             derivationRules.get(lhs).add(rhs);
             } else {
-            HashSet<List<Symbol>> lhsRules = new HashSet<List<Symbol>>();
+            HashSet<List<Token>> lhsRules = new HashSet<List<Token>>();
             lhsRules.add(rhs);
             derivationRules.put(lhs, lhsRules);
         }
     }
 
     // get derivation rules
-    public Map<NonTerminal,Set<List<Symbol>>> getDerivationRules() {
+    public Map<NonTerminal,Set<List<Token>>> getDerivationRules() {
         return derivationRules;
     }
 
-    public Set<List<Symbol>> getRules(NonTerminal nonTerm) {
+    public Set<List<Token>> getRules(NonTerminal nonTerm) {
         return derivationRules.get(nonTerm);
     }
 
@@ -43,7 +43,7 @@ public class Grammar {
         return follow;
     }
 
-    public Map<Pair<NonTerminal,Terminal>,List<Symbol>> getActionTable() {
+    public Map<Pair<NonTerminal,Terminal>,List<Token>> getActionTable() {
         return actionTable;
     }
 
@@ -56,9 +56,9 @@ public class Grammar {
         do {
             stable = true;
             for (NonTerminal nonTerm: NonTerminal.values()) {
-                Set<List<Symbol>> rules = getRules(nonTerm);
+                Set<List<Token>> rules = getRules(nonTerm);
                 if (rules != null) {
-                    for (List<Symbol> rule: rules) {
+                    for (List<Token> rule: rules) {
                         Set<Terminal> firstOfRule = first(rule);
                         if (first.get(nonTerm).addAll(firstOfRule)) {
                             stable = false;
@@ -73,16 +73,16 @@ public class Grammar {
         for (NonTerminal nonTerm: NonTerminal.values()) {
             follow.put(nonTerm, EnumSet.noneOf(Terminal.class));
         }
-        follow.put(startSymbol, EnumSet.of(Terminal.EPSILON));
+        follow.put(startToken, EnumSet.of(Terminal.EPSILON));
         boolean stable;
         do {
             stable = true;
             for (NonTerminal nonTerm: NonTerminal.values()) {
-                Set<List<Symbol>> rules = getRules(nonTerm);
+                Set<List<Token>> rules = getRules(nonTerm);
                 if (rules != null) {
-                    for (List<Symbol> rule: rules) {
+                    for (List<Token> rule: rules) {
                         for (int i = 0; i < rule.size() ; i++) {
-                            Symbol symb = rule.get(i);
+                            Token symb = rule.get(i);
                             if (symb.isNonTerminal()) {
                                 Set<Terminal> firstOfRule = first(rule.subList(i+1, rule.size()));
                                 if (follow.get(symb.getNonTerminal()).addAll(firstOfRule)) {
@@ -102,9 +102,9 @@ public class Grammar {
     }
 
 
-    public Set<Terminal> first(List<Symbol> partialRule) {
+    public Set<Terminal> first(List<Token> partialRule) {
         Set<Terminal> firstOfRule = EnumSet.noneOf(Terminal.class);
-        for (Symbol symb: partialRule) {
+        for (Token symb: partialRule) {
             if (symb.isTerminal()) {
                 firstOfRule.add(symb.getTerminal());
                 if (!symb.isEpsilon()) {
@@ -120,7 +120,7 @@ public class Grammar {
         return firstOfRule;
     }
 
-    public void addAction(NonTerminal nonTerm, Terminal term, List<Symbol> rule) throws Exception {
+    public void addAction(NonTerminal nonTerm, Terminal term, List<Token> rule) throws Exception {
         if (actionTable.containsKey(new Pair<NonTerminal, Terminal>(nonTerm, term))) {
             // throw new Exception("The grammar is not LL(1): tried to add rule " + rule + " to (" + nonTerm + ", " + term + ") but already had rule " + actionTable.get(new Pair<NonTerminal, Terminal>(nonTerm, term)) + "\n");
             System.out.println("The grammar is not LL(1): tried to add rule " + rule + " to (" + nonTerm + ", " + term + ") but already had rule " + actionTable.get(new Pair<NonTerminal, Terminal>(nonTerm, term)) + "\n");
@@ -132,7 +132,7 @@ public class Grammar {
     public void setActionTable() throws Exception {
         for (NonTerminal nonTerm: NonTerminal.values()) {
             System.out.println("nonTerm: " + nonTerm);
-            for (List<Symbol> rule: getRules(nonTerm)) {
+            for (List<Token> rule: getRules(nonTerm)) {
                 System.out.println("rule: " + rule);
                 for (Terminal term: first(rule)) {
 
@@ -155,13 +155,13 @@ public class Grammar {
         for (NonTerminal variable: derivationRules.keySet()) {
             string.append(String.format("%1$-12s--> ", variable));
             first = true;
-            for (List<Symbol> rule: derivationRules.get(variable)) {
+            for (List<Token> rule: derivationRules.get(variable)) {
                 if (first) {
                     first = false;
                 } else {
                     string.append("            --> ");
                 }
-                for (Symbol symb: rule) {
+                for (Token symb: rule) {
                     string.append(symb);
                     string.append(" ");
                 }
@@ -227,8 +227,8 @@ public class Grammar {
     }
 
     /* TODO:
-    * build a derivation tree which from startSymbol
-    * inputs: terminal enum, nonTerminal enum, startSymbol, derivationRules
+    * build a derivation tree which from startToken
+    * inputs: terminal enum, nonTerminal enum, startToken, derivationRules
     * output: derivation tree
     * this is a kind of derivationRules: {Program=[[BEGIN, Code, END]], Code=[[InstList], [EPSILON]], InstList=[[Instruction], [Instruction, DOTS, InstList]], Instruction=[[If], [Assign], [While], [For], [Print], [Read], [BEGIN, InstList, END]], Assign=[[VARNAME, ASSIGN, ExprArith]], ExprArith=[[UMINUS, ExprArith], [VARNAME], [NUMBER], [LPAREN, ExprArith, RPAREN], [ExprArith, Op, ExprArith]], Op=[[PLUS], [TIMES], [BMINUS], [DIVIDE]], If=[[IF, Cond, THEN, Instruction, ELSE, Instruction], [IF, Cond, THEN, Instruction]], Cond=[[SimpleCond], [Cond, AND, Cond], [LBRACK, Cond, RBRACK], [Cond, OR, Cond]], SimpleCond=[[ExprArith, Comp, ExprArith]], Comp=[[EQUAL], [SMALLER]], While=[[WHILE, Cond, DO, Instruction]], Print=[[PRINT, LPAREN, VARNAME, RPAREN]], Read=[[READ, LPAREN, VARNAME, RPAREN]]}
      * */

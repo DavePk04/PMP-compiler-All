@@ -15,7 +15,7 @@ import java.util.Collections;
 
 %{
     private NonTerminal currentVariable;
-    private ArrayList<Symbol> currentRHS = new ArrayList<Symbol>();
+    private ArrayList<Token> currentRHS = new ArrayList<Token>();
     private Grammar grammar = new Grammar(NonTerminal.Program);
 
     public NonTerminal getNonTerminal(String nonTerm) {
@@ -87,16 +87,16 @@ Spaces         = {Space}+
     {Variable}         {currentVariable = getNonTerminal(yytext());}
     {RightArrow}       {yybegin(RHS);}
     {Spaces}           {}
-    [^]                {throw new PatternSyntaxException("Unmatched token, out of symbols",yytext(),yyline);} // unmatched token gives an error
+    [^]                {throw new PatternSyntaxException("Unmatched token, out of Tokens",yytext(),yyline);} // unmatched token gives an error
 }
 
 <RHS> {
-    {Variable}         {currentRHS.add(new Symbol(getNonTerminal(yytext())));}
-    {Terminal}         {currentRHS.add(new Symbol(getTerminal(yytext())));}
-    {Epsilon}          {currentRHS.add(new Symbol(Terminal.EPSILON));}
+    {Variable}         {currentRHS.add(new Token(getNonTerminal(yytext())));}
+    {Terminal}         {currentRHS.add(new Token(getTerminal(yytext())));}
+    {Epsilon}          {currentRHS.add(new Token(Terminal.EPSILON));}
     {Spaces}           {}
     {EndOfLine}        {grammar.addRule(currentVariable, Collections.unmodifiableList(currentRHS));
-                        currentRHS = new ArrayList<Symbol>();
+                        currentRHS = new ArrayList<Token>();
                         yybegin(YYINITIAL);}
-    [^]                {throw new PatternSyntaxException("Unmatched token, out of symbols",yytext(),yyline);}
+    [^]                {throw new PatternSyntaxException("Unmatched token, out of Tokens",yytext(),yyline);}
 }
