@@ -21,7 +21,6 @@ public class ProcessGrammar {
             output.append("\n********** First **********\n" + grammar.stringFirst());
             grammar.setFollow();
             output.append("\n********** Follow **********\n" + grammar.stringFollow());
-            System.out.print(output);
             // print start symbol
 
 

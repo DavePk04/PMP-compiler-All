@@ -85,9 +85,18 @@ public class Grammar {
                             Token symb = rule.get(i);
                             if (symb.isNonTerminal()) {
                                 Set<Terminal> firstOfRule = first(rule.subList(i+1, rule.size()));
-                                if (follow.get(symb.getNonTerminal()).addAll(firstOfRule)) {
-                                    stable = false;
-                                };
+                                if (firstOfRule.contains(Terminal.EPSILON)) {
+                                    firstOfRule.remove(Terminal.EPSILON);  // Remove EPSILON from firstOfRule
+                                    if (follow.get(symb.getNonTerminal()).addAll(firstOfRule)) {
+                                        stable = false;
+                                    }
+                                    // add EPSILON to firstOfRule
+                                    firstOfRule.add(Terminal.EPSILON);
+                                } else {
+                                    if (follow.get(symb.getNonTerminal()).addAll(firstOfRule)) {
+                                        stable = false;
+                                    }
+                                }
                                 if (firstOfRule.contains(Terminal.EPSILON) || i == rule.size()-1) {
                                     if (follow.get(symb.getNonTerminal()).addAll(follow.get(nonTerm))) {
                                         stable = false;
@@ -131,9 +140,7 @@ public class Grammar {
 
     public void setActionTable() throws Exception {
         for (NonTerminal nonTerm: NonTerminal.values()) {
-            System.out.println("nonTerm: " + nonTerm);
             for (List<Token> rule: getRules(nonTerm)) {
-                System.out.println("rule: " + rule);
                 for (Terminal term: first(rule)) {
 
                     if (term.equals(Terminal.EPSILON)) {

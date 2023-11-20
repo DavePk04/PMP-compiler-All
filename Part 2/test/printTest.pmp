@@ -1,6 +1,6 @@
 
 
-'' Euclid's algorithm ''
+'' Example 1 ''
 
 begin
     print(a)

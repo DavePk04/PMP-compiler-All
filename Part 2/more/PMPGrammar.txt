@@ -22,7 +22,7 @@
 <MultOp>          --> times
                   --> divide
 <ExprArith3>      --> lparen <ExprArith> rparen
-                  --> minus <ExprArith>
+                  --> minus <ExprArith3>
                   --> varname
                   --> number
 <If>              --> if <Cond> then <Instruction> else <Statement>
