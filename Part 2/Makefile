@@ -55,5 +55,3 @@ parseTree:
 clean:
 	rm -rf $(BIN_DIR)/*.class
 	rm -rf $(TEST_DIR)/*.tex
-	rm -rf $(SRC_DIR)/GrammarReader.java
-	rm $(SRC_DIR)/LexicalAnalyzer.java

@@ -2,8 +2,7 @@ import java.io.*;
 import java.util.TreeMap;
 import java.util.Map;
 /**
- * @author SHEHRZAD Mohammad Amir - 000480454
- * Analyzer Class : Lexcial analyzer of the Fortress
+ * Analyzer Class : Lexcial analyzer for PASCALMAISPRESQUE grammar
  */
 public class Analyzer {
     private final LexicalAnalyzer analyzer;

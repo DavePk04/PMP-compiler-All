@@ -10,7 +10,6 @@ import java.util.ArrayList;
  * class can also be seen as representing the Node of a tree, in which case a
  * tree is simply represented as its root.
  *
- * @author Léo Exibard, Sarah Winter
  */
 
 public class ParseTree {
