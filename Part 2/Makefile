@@ -1,18 +1,59 @@
-all: run
+# Makefile for building and running the project
 
-build: src/Main.class
+# Compiler
+JC = javac
 
-src/Main.class: src/Main.java
-	javac src/Main.java
+# Flags
+JFLAGS = -g
 
-generate: src/GrammarReader.java
+# Source directory
+SRC_DIR = src
 
-src/GrammarReader.java: src/GrammarReader.flex
-	cd src && jflex GrammarReader.flex
+# Binary directory
+BIN_DIR = bin
 
-run: build generate
-	java -classpath src Main ../more/PMPGrammar.txt
+# More directory
+MORE_DIR = more
+
+# Test directory
+TEST_DIR = test
+
+# Main class
+PROCESS_CLASS = ProcessGrammar
+MAIN_CLASS = Main
+
+# JFlex files
+JFLEX_FILES = GrammarReader.flex LexicalAnalyzer.flex
+
+# ProcessGrammar file
+PROCESS_GRAMMAR_FILE = $(SRC_DIR)/$(MAIN_CLASS).java
+
+# Source files
+SOURCE_FILES = $(SRC_DIR)/GrammarReader.java $(SRC_DIR)/Grammar.java $(PROCESS_GRAMMAR_FILE)
+
+# Target files
+TARGET_FILES = $(BIN_DIR)/$(MAIN_CLASS).class
+
+all: lexer compile grammar parser parseTree
+
+lexer:
+	jflex $(SRC_DIR)/GrammarReader.flex
+	jflex $(SRC_DIR)/LexicalAnalyzer.flex
+
+compile:
+	$(JC) $(JFLAGS) -d $(BIN_DIR) $(SRC_DIR)/*.java
+
+grammar:
+	java -cp $(BIN_DIR) $(PROCESS_CLASS) $(MORE_DIR)/PMPGrammar.txt
+
+parser:
+	java -cp $(BIN_DIR) $(MAIN_CLASS) $(TEST_DIR)/printTest.pmp
+
+parseTree:
+	java -cp $(BIN_DIR) $(MAIN_CLASS) -wt $(TEST_DIR)/printTest.tex $(TEST_DIR)/printTest.pmp
 
 clean:
-	rm -f src/GrammarReader.java
-	rm -f src/*.class
+	rm -rf $(BIN_DIR)/*.class
+	rm -rf $(TEST_DIR)/*.tex
+	rm -rf $(SRC_DIR)/GrammarReader.java
+	rm $(SRC_DIR)/LexicalAnalyzer.java
