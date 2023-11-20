@@ -72,7 +72,7 @@ public class Parser {
                 return new ParseTree(new Label(NonTerminal.Code),
                         Arrays.asList(new ParseTree(new Label(Terminal.EPSILON, ""))));
             // Code  -->  InstList
-            // first(code) = {BEGIN, IF, WHILE, PRINT, READ, VARNAME}
+            // first(code) = {BEGIN, IF, WHILE, PRINT, READ, VARNAME, EPSILON}
             case BEGIN:
             case IF:
             case WHILE:
@@ -111,9 +111,9 @@ public class Parser {
     private ParseTree dotsInstList() throws Exception {
         switch (currentSymbol.getTerminal()) {
             // DotsInstList --> DOTS InstList
-            // first(DotsInstList) = DOTS
+            // first(DotsInstList) = {DOTS, EPSILON}
             case DOTS:
-                this.rulesNumberList.add(5); // DotsInstList --> DOTS InstList
+                this.rulesNumberList.add(6); // DotsInstList --> DOTS InstList
                 return new ParseTree(new Label(NonTerminal.DotsInstList),
                         Arrays.asList(
                                 match(Terminal.DOTS),
@@ -122,7 +122,7 @@ public class Parser {
             // DotsInstList --> EPSILON
             // follow(DotsInstList) = {END}
             case END:
-                this.rulesNumberList.add(6); // DotsInstList --> EPSILON
+                this.rulesNumberList.add(5); // DotsInstList --> EPSILON
                 return new ParseTree(new Label(NonTerminal.DotsInstList),
                         Arrays.asList(new ParseTree(new Label(Terminal.EPSILON, ""))));
             default:
@@ -189,18 +189,18 @@ public class Parser {
     }
 
     private ParseTree exprArithPrim() throws Exception {
-        // first(ExprArithPrim) = {PLUS, MINUS}
-        // follow(ExprArithPrim) = { END, DOTS, RPAREN, MINUS, PLUS, TIMES, DIVIDE, THEN, ELSE, AND, OR, RBRACK, EQUAL, SMALLER, DO}
+        // first(ExprArithPrim) = {PLUS, MINUS, EPSILON}
+        // follow(ExprArithPrim) = { END, DOTS, RPAREN, THEN, ELSE, AND, OR, RBRACK, EQUAL, SMALLER, DO}
         switch (currentSymbol.getTerminal()) {
-            case PLUS, MINUS:         // ExprArithPrim --> AddOp ExprArith2 ExprArithPrim
-                this.rulesNumberList.add(16); // ExprArithPrim --> AddOp ExprArith2 ExprArithPrim
+            case PLUS, MINUS: // ExprArithPrim --> AddOp ExprArith2 ExprArithPrim
+                this.rulesNumberList.add(15); // ExprArithPrim --> AddOp ExprArith2 ExprArithPrim
                 return new ParseTree(new Label(NonTerminal.ExprArithPrim), Arrays.asList(
                         addOp(),
                         exprArith2(),
                         exprArithPrim()
                 ));
-            case END, DOTS, RPAREN, TIMES, DIVIDE, THEN, ELSE, AND, OR, RBRACK, EQUAL, SMALLER, DO: // ExprArithPrim --> EPSILON
-                this.rulesNumberList.add(15); // ExprArithPrim --> EPSILON
+            case END, DOTS, RPAREN, THEN, ELSE, AND, OR, RBRACK, EQUAL, SMALLER, DO: // ExprArithPrim --> EPSILON
+                this.rulesNumberList.add(16); // ExprArithPrim --> EPSILON
                 return new ParseTree(new Label(NonTerminal.ExprArithPrim),
                         Arrays.asList(new ParseTree(new Label(Terminal.EPSILON, ""))));
             default:
@@ -212,10 +212,10 @@ public class Parser {
         // first(AddOp) = {PLUS, MINUS}
         switch (currentSymbol.getTerminal()) {
             case PLUS: // AddOp       --> PLUS
-                this.rulesNumberList.add(18); // AddOp       --> PLUS
+                this.rulesNumberList.add(17); // AddOp       --> PLUS
                 return new ParseTree(new Label(NonTerminal.AddOp), Arrays.asList(match(Terminal.PLUS)));
             case MINUS: // AddOp       --> MINUS
-                this.rulesNumberList.add(17); // AddOp       --> MINUS
+                this.rulesNumberList.add(18); // AddOp       --> MINUS
                 return new ParseTree(new Label(NonTerminal.AddOp), Arrays.asList(match(Terminal.MINUS)));
             default:
                 throw new Exception(getExceptionString());
@@ -234,29 +234,29 @@ public class Parser {
 
     private ParseTree exprArith3() throws Exception {
         // ExprArith3  --> NUMBER
-        //             --> MINUS ExprArith
+        //             --> MINUS ExprArith3
         //             --> LPAREN ExprArith RPAREN
         //             --> VARNAME
         // first(ExprArith3) = {LPAREN, MINUS, VARNAME, NUMBER}
         switch (currentSymbol.getTerminal()) {
             case NUMBER: // ExprArith3  --> NUMBER
-                this.rulesNumberList.add(24); // ExprArith3  --> NUMBER
+                this.rulesNumberList.add(27); // ExprArith3  --> NUMBER
                 return new ParseTree(new Label(NonTerminal.ExprArith3), Arrays.asList(match(Terminal.NUMBER)));
             case MINUS: // ExprArith3  --> MINUS ExprArith
-                this.rulesNumberList.add(25); // ExprArith3  --> MINUS ExprArith
+                this.rulesNumberList.add(25); // ExprArith3  --> MINUS ExprArith3
                 return new ParseTree(new Label(NonTerminal.ExprArith3), Arrays.asList(
                         match(Terminal.MINUS),
-                        exprArith()
+                        exprArith3()
                 ));
             case LPAREN: // ExprArith3  --> LPAREN ExprArith RPAREN
-                this.rulesNumberList.add(26); // ExprArith3  --> LPAREN ExprArith RPAREN
+                this.rulesNumberList.add(24); // ExprArith3  --> LPAREN ExprArith RPAREN
                 return new ParseTree(new Label(NonTerminal.ExprArith3), Arrays.asList(
                         match(Terminal.LPAREN),
                         exprArith(),
                         match(Terminal.RPAREN)
                 ));
             case VARNAME: // ExprArith3  --> VARNAME
-                this.rulesNumberList.add(27); // ExprArith3  --> VARNAME
+                this.rulesNumberList.add(26); // ExprArith3  --> VARNAME
                 return new ParseTree(new Label(NonTerminal.ExprArith3), Arrays.asList(match(Terminal.VARNAME)));
             default:
                 throw new Exception(getExceptionString());
@@ -265,8 +265,8 @@ public class Parser {
 
     private ParseTree exprArith2Prim() throws Exception {
         // ExprArith2Prim --> MultOp ExprArith3 ExprArith2Prim
-        // first(ExprArith2Prim) = {TIMES, DIVIDE}
-        // follow(ExprArith2Prim) = {END, DOTS, RPAREN, MINUS, PLUS, TIMES, DIVIDE, THEN, ELSE, AND, OR, RBRACK, EQUAL, SMALLER, DO, EPSILON}
+        // first(ExprArith2Prim) = {TIMES, DIVIDE, EPSILON}
+        // follow(ExprArith2Prim) = {END, DOTS, RPAREN, MINUS, PLUS, THEN, ELSE, AND, OR, RBRACK, EQUAL, SMALLER, DO}
         switch (currentSymbol.getTerminal()) {
             case TIMES, DIVIDE: // ExprArith2Prim --> MultOp ExprArith3 ExprArith2Prim
                 this.rulesNumberList.add(20); // ExprArith2Prim --> MultOp ExprArith3 ExprArith2Prim
@@ -275,7 +275,7 @@ public class Parser {
                         exprArith3(),
                         exprArith2Prim()
                 ));
-            case END, DOTS, RPAREN, MINUS, PLUS, THEN, ELSE, AND, OR, RBRACK, EQUAL, SMALLER, DO, EPSILON: // ExprArith2Prim --> EPSILON
+            case END, DOTS, RPAREN, MINUS, PLUS, THEN, ELSE, AND, OR, RBRACK, EQUAL, SMALLER, DO: // ExprArith2Prim --> EPSILON
                 this.rulesNumberList.add(21); // ExprArith2Prim --> EPSILON
                 return new ParseTree(new Label(NonTerminal.ExprArith2Prim),
                         Arrays.asList(new ParseTree(new Label(Terminal.EPSILON, ""))));
@@ -288,10 +288,10 @@ public class Parser {
         // first(MultOp) = {TIMES, DIVIDE}
         switch (currentSymbol.getTerminal()) {
             case TIMES: // MultOp      --> TIMES
-                this.rulesNumberList.add(23); // MultOp      --> TIMES
+                this.rulesNumberList.add(22); // MultOp      --> TIMES
                 return new ParseTree(new Label(NonTerminal.MultOp), Arrays.asList(match(Terminal.TIMES)));
             case DIVIDE: // MultOp      --> DIVIDE
-                this.rulesNumberList.add(22); // MultOp      --> DIVIDE
+                this.rulesNumberList.add(23); // MultOp      --> DIVIDE
                 return new ParseTree(new Label(NonTerminal.MultOp), Arrays.asList(match(Terminal.DIVIDE)));
             default:
                 throw new Exception(getExceptionString());
@@ -315,15 +315,15 @@ public class Parser {
     private ParseTree statement() throws Exception {
         // Statement    --> Instruction
         //              --> EPSILON
-        // first(Statement) = {BEGIN, IF, WHILE, PRINT, READ, VARNAME}
-        // follow(Statement) = {END, DOTS, ELSE, EPSILON}
+        // first(Statement) = {BEGIN, IF, WHILE, PRINT, READ, VARNAME, EPSILON}
+        // follow(Statement) = {END, DOTS, ELSE}
 
         switch (currentSymbol.getTerminal()) {
             case BEGIN, IF, WHILE, PRINT, READ, VARNAME: // Statement    --> Instruction
-                this.rulesNumberList.add(30); // Statement    --> Instruction
+                this.rulesNumberList.add(29); // Statement    --> Instruction
                 return new ParseTree(new Label(NonTerminal.Statement), Arrays.asList(instruction()));
             case END, DOTS, ELSE, EPSILON: // Statement    --> EPSILON
-                this.rulesNumberList.add(29); // Statement    --> EPSILON
+                this.rulesNumberList.add(30); // Statement    --> EPSILON
                 return new ParseTree(new Label(NonTerminal.Statement),
                         Arrays.asList(new ParseTree(new Label(Terminal.EPSILON, ""))));
             default:
@@ -401,10 +401,10 @@ public class Parser {
         // first(Cond3) = {LPAREN, MINUS, LBRACK, VARNAME, NUMBER}
         switch (currentSymbol.getTerminal()) {
             case LPAREN, MINUS, VARNAME, NUMBER: // Cond3        --> SimpleCond
-                this.rulesNumberList.add(37); // Cond3        --> SimpleCond
+                this.rulesNumberList.add(38); // Cond3        --> SimpleCond
                 return new ParseTree(new Label(NonTerminal.Cond3), Arrays.asList(simpleCond()));
             case LBRACK: // Cond3        --> LBRACK Cond RBRACK
-                this.rulesNumberList.add(38); // Cond3        --> LBRACK Cond RBRACK
+                this.rulesNumberList.add(37); // Cond3        --> LBRACK Cond RBRACK
                 return new ParseTree(new Label(NonTerminal.Cond3), Arrays.asList(
                         match(Terminal.LBRACK),
                         cond(),
