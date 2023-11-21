@@ -41,10 +41,6 @@ public class    Symbol{
 		this(unit,line,UNDEFINED_POSITION,NO_VALUE);
 	}
 
-//	public Symbol(Terminal unit){
-//		this(unit,UNDEFINED_POSITION,UNDEFINED_POSITION,NO_VALUE);
-//	}
-
 	public Symbol(Terminal unit,Object value){
 		this(unit,UNDEFINED_POSITION,UNDEFINED_POSITION,value);
 	}

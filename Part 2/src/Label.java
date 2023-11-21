@@ -4,43 +4,41 @@ public class Label {
 
     private final Terminal terminal;
     private final NonTerminal nonTerminal;
-    private String valueToOut;    // Value of symbol to put in parseTree node.
+    private String valueToOut; // Value of the symbol to put in the parseTree node.
 
-    public Label(Terminal Terminal, String valueToOut) {
-        this.terminal = Terminal;
+    public Label(Terminal terminal, String valueToOut) {
+        this.terminal = terminal;
         this.nonTerminal = null;
         this.valueToOut = valueToOut;
     }
 
-    public Label(NonTerminal NonTerminal) {
+    public Label(NonTerminal nonTerminal) {
         this.terminal = null;
-        this.nonTerminal = NonTerminal;
+        this.nonTerminal = nonTerminal;
         this.valueToOut = "";
     }
 
     /**
-     * Set the value of the terminal which should be put in the node of the parseTree
+     * Set the value of the terminal which should be put in the node of the parseTree.
      */
-    private void setValueToOut(){
-        // When the token and the terminal are identical, we avoid writing in the node of the parseTree both of them.
-        // For example: [BEGIN BEGIN], its more clear to write only [BEGIN]
-        if (terminal != null && Objects.equals(valueToOut, terminal.toString())){
-            valueToOut="";
+    private void setValueToOut() {
+        // When the token and the terminal are identical, we avoid writing both of them in the parseTree node.
+        // For example: [BEGIN BEGIN], it's clearer to write only [BEGIN]
+        if (terminal != null && Objects.equals(valueToOut, terminal.toString())) {
+            valueToOut = "";
         }
-        // replace ">" by "$>$" to respect latex syntax otherwise the output will be "¿"
-        if (Objects.equals(valueToOut, "<")){
+        // Replace ">" by "$>$" to respect LaTeX syntax; otherwise, the output will be "¿"
+        if (Objects.equals(valueToOut, "<")) {
             valueToOut = "$<$";
-        }
-        else if (Objects.equals(valueToOut, ">")){
+        } else if (Objects.equals(valueToOut, ">")) {
             valueToOut = "$>$";
-
         }
     }
 
     public String toTexString() {
-        setValueToOut(); // set the valueToOut of the current terminal
+        setValueToOut(); // Set the valueToOut of the current terminal
         if (this.terminal != null) {
-            return terminal + " " +valueToOut;
+            return terminal + " " + valueToOut;
         }
         if (this.nonTerminal != null) {
             return nonTerminal.toString();
