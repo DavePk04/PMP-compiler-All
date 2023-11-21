@@ -9,31 +9,30 @@ import java.util.ArrayList;
  * leave is simply a tree with no children (its list of children is empty). This
  * class can also be seen as representing the Node of a tree, in which case a
  * tree is simply represented as its root.
- * 
- * @author Léo Exibard, Sarah Winter
+ *
  */
 
 public class ParseTree {
-    private Symbol label; // The label of the root of the tree
-    private List<ParseTree> children; // Its children, which are trees themselves
+    private final Label label; // The label of the root of the tree
+    private final List<ParseTree> children; // Its children, which are trees themselves
 
     /**
      * Creates a singleton tree with only a root labeled by lbl.
-     * 
+     *
      * @param lbl The label of the root
      */
-    public ParseTree(Symbol lbl) {
+    public ParseTree(Label lbl) {
         this.label = lbl;
-        this.children = new ArrayList<ParseTree>(); // This tree has no children
+        this.children = new ArrayList<>(); // This tree has no children
     }
 
     /**
      * Creates a tree with root labeled by lbl and children chdn.
-     * 
+     *
      * @param lbl  The label of the root
      * @param chdn Its children
      */
-    public ParseTree(Symbol lbl, List<ParseTree> chdn) {
+    public ParseTree(Label lbl, List<ParseTree> chdn) {
         this.label = lbl;
         this.children = chdn;
     }
@@ -42,9 +41,10 @@ public class ParseTree {
      * Writes the tree as LaTeX code
      */
     public String toLaTexTree() {
+
         StringBuilder treeTeX = new StringBuilder();
         treeTeX.append("[");
-        treeTeX.append("{" + label.toTexString() + "}");
+        treeTeX.append("{").append(label.toTexString()).append("}");
         treeTeX.append(" ");
 
         for (ParseTree child : children) {
@@ -93,7 +93,7 @@ public class ParseTree {
      * <br>
      * <br>
      * The result can be used with the command:
-     * 
+     *
      * <pre>
      * pdflatex some-file.tex
      * </pre>

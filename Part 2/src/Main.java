@@ -1,48 +1,66 @@
 import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.TreeMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.Objects;
 
 public class Main {
-
-    public static void main(String[] args) {
+    /**
+     * Main method
+     * @param argv Command line arguments
+     */
+    public static void main(String[] argv) {
         try {
-            FileReader grammarSource = new FileReader(args[args.length-1]);
-            GrammarReader grammarReader = new GrammarReader(grammarSource);
-            Grammar grammar = grammarReader.getGrammar();
-            StringBuilder output = new StringBuilder();
-            output.append("********** The Grammar **********\n");
-            output.append(grammar);
-
-            grammar.setFirst();
-            output.append("\n********** First **********\n" + grammar.stringFirst());
-
-            grammar.setFollow();
-            output.append("\n********** Follow **********\n" + grammar.stringFollow());
-
-//            grammar.setActionTable();
-//            output.append("\n********** Action table **********\n");
-            System.out.print(output);
-//
-//            // Print action table
-//            if (args.length > 0 && args[0].equals("-pat")) {
-//                System.out.println(grammar.stringActionTable());
-//            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (argv.length == 1) {
+                printRules(argv);
+            } else if (argv.length == 3 && Objects.equals(argv[0], "-wt")) {
+                makeParseTree(argv);
+            } else {
+                help();
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error: " + e.getMessage());
         }
+    }
+
+    private static void printRules(String[] argv) throws Exception {
+        try (FileReader file = new FileReader(argv[0])) {
+            Parser parser = new Parser(file);
+            parser.program(); // parse the program
+            Integer[] rules = parser.getRulesNumberList().toArray(new Integer[0]);
+            for (Integer rule : rules) {
+                System.out.print(rule + " ");
+            }
+            System.out.println();
+        } catch (IOException e) {
+            throw new Exception(argv[0] + " file not found");
+        }
+    }
+
+    private static void makeParseTree(String[] argv) throws Exception {
+        try (FileReader file = new FileReader(argv[2]);
+             FileWriter treeToTex = new FileWriter(argv[1])) {
+
+            Parser parser = new Parser(file);
+            ParseTree parseTree = parser.program();
+
+            treeToTex.write(parseTree.toLaTeX());
+            treeToTex.write(parseTree.toTikZPicture());
+
+        } catch (IOException e) {
+            throw new Exception("Cannot create the file: " + argv[1]);
+        }
+    }
+
+    /**
+     * Help function to guide the users
+     */
+    private static void help() {
+        System.out.println("Usage: java -jar part2.jar [OPTION] [FILE]");
+        System.out.println("For printing the parse tree (rules), the command for running your\n" +
+                "executable must be as follows:");
+        System.out.println("java -jar part2.jar sourceFile.pmp");
+        System.out.println("For writing the parse tree to a tex file, the command for running your\n" +
+                "executable must be as follows: ");
+        System.out.println("java -jar part2.jar -wt sourceFile.tex sourceFile.pmp");
     }
 }

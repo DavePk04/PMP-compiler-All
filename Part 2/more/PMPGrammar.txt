@@ -1,34 +1,44 @@
-<Program>      --> begin <Code> end
-<Code>         --> epsilon
-               --> <InstList>
-<InstList>     --> <Instruction>
-               --> <Instruction> dots <InstList>
-<Instruction>  --> <Assign>
-               --> <If>
-               --> <While>
-               --> <For>
-               --> <Print>
-               --> <Read>
-               --> begin <InstList> end
-<Assign>       --> varname assign <ExprArith>
-<ExprArith>    --> varname
-               --> number
-               --> lparen <ExprArith> rparen
-               --> uminus <ExprArith>
-               --> <ExprArith> <Op> <ExprArith>
-<Op>           --> plus
-               --> bminus
-               --> times
-               --> divide
-<If>           --> if <Cond> then <Instruction>
-               --> if <Cond> then <Instruction> else <Instruction>
-<Cond>         --> <Cond> and <Cond>
-               --> <Cond> or <Cond>
-               --> lbrack <Cond> rbrack
-               --> <SimpleCond>
-<SimpleCond>   --> <ExprArith> <Comp> <ExprArith>
-<Comp>         --> equal
-               --> smaller
-<While>        --> while <Cond> do <Instruction>
-<Print>        --> print lparen varname rparen
-<Read>         --> read lparen varname rparen
+<Program>         --> begin <Code> end
+<Code>            --> epsilon
+                  --> <InstList>
+<InstList>        --> <Instruction> <DotsInstList>
+<DotsInstList>    --> epsilon
+                  --> dots <InstList>
+<Instruction>     --> <Assign>
+                  --> <If>
+                  --> <While>
+                  --> <Print>
+                  --> <Read>
+                  --> begin <InstList> end
+<Assign>          --> varname assign <ExprArith>
+<ExprArith>       --> <ExprArith2> <ExprArithPrim>
+<ExprArithPrim>   --> <AddOp> <ExprArith2><ExprArithPrim>
+                  --> epsilon
+<AddOp>           --> plus
+                  --> minus
+<ExprArith2>      --> <ExprArith3> <ExprArith2Prim>
+<ExprArith2Prim>  --> <MultOp> <ExprArith3><ExprArith2Prim>
+                  --> epsilon
+<MultOp>          --> times
+                  --> divide
+<ExprArith3>      --> lparen <ExprArith> rparen
+                  --> minus <ExprArith3>
+                  --> varname
+                  --> number
+<If>              --> if <Cond> then <Instruction> else <Statement>
+<Statement>       --> <Instruction>
+                  --> epsilon
+<Cond>            --> <Cond2><CondPrim>
+<CondPrim>        --> or <Cond2><CondPrim>
+                  --> epsilon
+<Cond2>           --> <Cond3><Cond2Prim>
+<Cond2Prim>       --> and <Cond3><Cond2Prim>
+                  --> epsilon
+<Cond3>           --> lbrack <Cond> rbrack
+                  --> <SimpleCond>
+<SimpleCond>      --> <ExprArith> <Comp> <ExprArith>
+<Comp>            --> equal
+                  --> smaller
+<While>           --> while <Cond> do <Instruction>
+<Read>            --> read lparen varname rparen
+<Print>           --> print lparen varname rparen
